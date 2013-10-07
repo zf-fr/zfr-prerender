@@ -19,6 +19,7 @@
 namespace ZfrPrerenderTest\Mvc;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use Zend\EventManager\EventManager;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrPrerender\Mvc\PrerenderListener;
@@ -183,6 +184,15 @@ class PrerenderListenerTest extends TestCase
         $this->assertEquals($result, $listener->shouldPrerenderPage($request));
     }
 
+    public function testAttachCorrectly()
+    {
+        $listener     = new PrerenderListener(new ModuleOptions());
+        $eventManager = new EventManager();
+
+        $listener->attach($eventManager);
+        $this->assertCount(1, $eventManager->getListeners(MvcEvent::EVENT_ROUTE));
+    }
+
     public function testDoesNothingForNonHttpRequest()
     {
         $mvcEvent = new MvcEvent();
@@ -190,6 +200,12 @@ class PrerenderListenerTest extends TestCase
         $listener = new PrerenderListener(new ModuleOptions());
 
         $this->assertNull($listener->prerenderPage($mvcEvent));
+    }
+
+    public function testCanGetHttpClient()
+    {
+        $listener = new PrerenderListener(new ModuleOptions());
+        $this->assertInstanceOf('Zend\Http\Client', $listener->getHttpClient());
     }
 
     public function testCanPerformGetRequest()
