@@ -43,6 +43,11 @@ class PrerenderListener extends AbstractListenerAggregate
     protected $moduleOptions;
 
     /**
+     * @var HttpClient
+     */
+    protected $httpClient;
+
+    /**
      * @param ModuleOptions $options
      */
     public function __construct(ModuleOptions $options)
@@ -56,6 +61,31 @@ class PrerenderListener extends AbstractListenerAggregate
     public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'prerenderPage'), 10000);
+    }
+
+    /**
+     * Set the HTTP client used to perform the GET request
+     *
+     * @param  HttpClient $httpClient
+     * @return void
+     */
+    public function setHttpClient(HttpClient $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
+    /**
+     * Get the HTTP client used to perform the GET request
+     *
+     * @return HttpClient
+     */
+    public function getHttpClient()
+    {
+        if (null === $this->httpClient) {
+            $this->httpClient = new HttpClient();
+        }
+
+        return $this->httpClient;
     }
 
     /**
@@ -74,10 +104,11 @@ class PrerenderListener extends AbstractListenerAggregate
 
         $event->stopPropagation(true);
 
-        $client = new HttpClient();
+        $client = $this->getHttpClient();
         $uri    = rtrim($this->moduleOptions->getPrerenderUrl(), '/') . '/' . $request->getUriString();
 
-        $client->setUri($uri);
+        $client->setUri($uri)
+               ->setMethod(HttpRequest::METHOD_GET);
 
         return $client->send();
     }
@@ -111,8 +142,8 @@ class PrerenderListener extends AbstractListenerAggregate
         // Then, return true if it is whitelisted (only if whitelist contains data)
         $whitelistUrls = $this->moduleOptions->getWhitelistUrls();
 
-        if (!empty($whitelistUrls) && $this->isWhitelisted($uri, $whitelistUrls)) {
-            return true;
+        if (!empty($whitelistUrls) && !$this->isWhitelisted($uri, $whitelistUrls)) {
+            return false;
         }
 
         // Finally, return false if it is blacklisted
@@ -154,7 +185,7 @@ class PrerenderListener extends AbstractListenerAggregate
     protected function isWhitelisted($uri, array $whitelistUrls)
     {
         foreach ($whitelistUrls as $whitelistUrl) {
-            $match = preg_match($whitelistUrl, $uri);
+            $match = preg_match('`' . $whitelistUrl . '`i', $uri);
 
             if ($match > 0) {
                 return true;
@@ -174,7 +205,7 @@ class PrerenderListener extends AbstractListenerAggregate
     protected function isBlacklisted($uri, array $blacklistUrls)
     {
         foreach ($blacklistUrls as $blacklistUrl) {
-            $match = preg_match($blacklistUrl, $uri);
+            $match = preg_match('`' . $blacklistUrl . '`i', $uri);
 
             if ($match > 0) {
                 return true;
