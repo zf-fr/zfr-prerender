@@ -146,10 +146,11 @@ class PrerenderListener extends AbstractListenerAggregate
             return false;
         }
 
-        // Finally, return false if it is blacklisted
+        // Finally, return false if it is blacklisted (or the referer)
+        $referer       = $request->getHeader('Referer') ? $request->getHeader('Referer')->getFieldValue() : null;
         $blacklistUrls = $this->moduleOptions->getBlacklistUrls();
 
-        if (!empty($blacklistUrls) && $this->isBlacklisted($uri, $blacklistUrls)) {
+        if (!empty($blacklistUrls) && $this->isBlacklisted($uri, $referer, $blacklistUrls)) {
             return false;
         }
 
@@ -199,13 +200,15 @@ class PrerenderListener extends AbstractListenerAggregate
      * Check if the request is blacklisted
      *
      * @param  string $uri
+     * @param  string $referer
      * @param  array $blacklistUrls
      * @return bool
      */
-    protected function isBlacklisted($uri, array $blacklistUrls)
+    protected function isBlacklisted($uri, $referer, array $blacklistUrls)
     {
         foreach ($blacklistUrls as $blacklistUrl) {
-            $match = preg_match('`' . $blacklistUrl . '`i', $uri);
+            $pattern = '`' . $blacklistUrl . '`i';
+            $match   = preg_match($pattern, $uri) + preg_match($pattern, $referer);
 
             if ($match > 0) {
                 return true;

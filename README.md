@@ -106,7 +106,8 @@ that happen very early in the MVC process, before the routing is actually done.
 #### Blacklist
 
 Blacklist a single url path or multiple url paths. Compares using regex, so be specific when possible. If a blacklist
-is supplied, all url's will be prerendered except ones containing a blacklist path.
+is supplied, all url's will be pre-rendered except ones containing a blacklist part. Please note that if the referer
+is part of the blacklist, it won't be pre-rendered too.
 
 Here is a sample configuration that prerender all URLs *excepting* the ones that contains "/users/":
 
