@@ -44,7 +44,6 @@ return array(
             '.jpg',
             '.js',
             '.png',
-            '.pdf',
         ),
 
         // Whitelist and blacklist
