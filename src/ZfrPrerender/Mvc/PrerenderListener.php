@@ -160,11 +160,20 @@ class PrerenderListener extends AbstractListenerAggregate
     /**
      * Check if the request is made from a crawler
      *
+     * To detect if a request comes from a bot, we have two strategies:
+     *      1. We first check if the "_escaped_fragment_" query param is defined. This is only
+     *         implemented by some search engines (Google, Yahoo and Bing among others)
+     *      2. If not, we use the User-Agent string
+     *
      * @param  HttpRequest $request
      * @return bool
      */
     protected function isCrawler(HttpRequest $request)
     {
+        if (null !== $request->getQuery('_escaped_fragment_')) {
+            return true;
+        }
+
         $userAgent = strtolower($request->getHeader('User-Agent')->getFieldValue());
 
         foreach ($this->moduleOptions->getCrawlerUserAgents() as $crawlerUserAgent) {
