@@ -239,6 +239,17 @@ class PrerenderListenerTest extends TestCase
         $this->assertEquals($result, $listener->shouldPrerenderPage($request));
     }
 
+    public function testCanDetectedEscapedFragmentQueryParam()
+    {
+        $request = new HttpRequest();
+        $request->getQuery()->set('_escaped_fragment_', 'heyaImABot');
+
+        $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');
+        $listener      = new PrerenderListener($moduleOptions);
+
+        $this->assertTrue($listener->shouldPrerenderPage($request));
+    }
+
     public function testAttachCorrectly()
     {
         $listener     = new PrerenderListener(new ModuleOptions());

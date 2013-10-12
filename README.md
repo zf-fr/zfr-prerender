@@ -23,7 +23,7 @@ $ php composer.phar require zfr/zfr-prerender:1.0.*
 ### How it works
 
 1. Check to make sure we should show a prerendered page
-	1. Check if the request is from a crawler (agent string)
+	1. Check if the request is from a crawler (either agent string or by detecting _escaped_fragment_ query param)
 	2. Check to make sure we aren't requesting a resource (js, css, etc...)
 	3. (optional) Check to make sure the url is in the whitelist
 	4. (optional) Check to make sure the url isn't in the blacklist
@@ -69,6 +69,9 @@ return array(
     )
 );
 ```
+
+> Note: ZfrPrerender also supports the detection of a crawler through the user of the `_escaped_fragment_` query
+param. You can learn more about this on [Google's website](https://developers.google.com/webmasters/ajax-crawling/docs/getting-started).
 
 #### Ignored extensions
 
