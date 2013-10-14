@@ -1,3 +1,7 @@
+# 1.1.1
+
+* Add Twitterbot User-Agent
+
 # 1.1.0
 
 * Add support for _escaped_fragment_ query param for detecting a bot
