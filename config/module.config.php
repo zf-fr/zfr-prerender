@@ -34,7 +34,8 @@ return array(
             'yahoo',
             'bingbot',
             'baiduspider',
-            'facebookexternalhit'
+            'facebookexternalhit',
+            'twitterbot'
         ),
 
         // Ignored extensions
