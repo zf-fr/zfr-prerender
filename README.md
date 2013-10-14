@@ -58,7 +58,7 @@ With this config, here is how ZfrPrerender will proxy the "https://google.com" r
 #### Crawler user-agents
 
 ZfrPrerender decides to pre-render based on the User-Agent string to check if a request comes from a bot or not. By
-default, those user agents are registered: `googlebot`, `yahoo`, `bingbot`, `baidu`.
+default, those user agents are registered: `googlebot`, `yahoo`, `bingbot`, `baidu` and `twitterbot`.
 
 You can add other User-Agent string to evaluate using this sample configuration:
 
@@ -76,7 +76,9 @@ param. You can learn more about this on [Google's website](https://developers.go
 #### Ignored extensions
 
 ZfrPrerender is configured by default to ignore all the requests for resources with those extensions: `.css`,
-`.gif`, `.jpeg`, `.jpg`, `.js`, `.png`. Those are never pre-rendered.
+`.gif`, `.jpeg`, `.jpg`, `.js`, `.png`, `.less`, `.pdf`, `.doc`, `.txt`, `.zip`, `.mp3`, `.rar`, `.exe`, `.wmv`,
+`.doc`, `.avi`, `.ppt`, `.mpg`, `.mpeg`, `.tif`, `.wav`, `.mov`, `.psd`, `.ai`, `.xls`, `.mp4`, `.m4a`, `.swf`,
+`.dat`, `.dmg`, `.iso`, `.flv`, `.m4v`, `.torrent`. Those are never pre-rendered.
 
 You can add your own extensions using this sample configuration:
 
