@@ -252,7 +252,7 @@ class PrerenderListenerTest extends TestCase
         $request  = new HttpRequest();
         $request->setUri($uri);
         $request->getHeaders()->addHeaderLine('User-Agent', $userAgent)
-            ->addHeaderLine('Referer', $referer);
+                              ->addHeaderLine('Referer', $referer);
 
         $listener = new PrerenderListener($moduleOptions);
 
@@ -309,17 +309,17 @@ class PrerenderListenerTest extends TestCase
         // Mock the client
         $clientMock = $this->getMock('Zend\Http\Client');
         $clientMock->expects($this->once())
-            ->method('setUri')
-            ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
-            ->will($this->returnValue($clientMock));
+                   ->method('setUri')
+                   ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
+                   ->will($this->returnValue($clientMock));
 
         $clientMock->expects($this->once())
-            ->method('setMethod')
-            ->with('GET');
+                   ->method('setMethod')
+                   ->with('GET');
 
         $clientMock->expects($this->once())
-            ->method('send')
-            ->will($this->returnValue($this->getMock('Zend\Stdlib\ResponseInterface')));
+                   ->method('send')
+                   ->will($this->returnValue($this->getMock('Zend\Stdlib\ResponseInterface')));
 
         $listener->setHttpClient($clientMock);
 
