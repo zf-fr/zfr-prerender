@@ -88,6 +88,26 @@ class PrerenderListenerTest extends TestCase
             ),
             // Test a Baidu Bot crawler
             array(
+                'user_agent'         => 'facebookexternalhit/1.1 (+http(s)://www.facebook.com/externalhit_uatext.php)',
+                'uri'                => 'http://www.example.com',
+                'referer'            => 'http://google.com',
+                'ignored_extensions' => array(),
+                'whitelist'          => array(),
+                'blacklist'          => array(),
+                'should_prerender'   => true
+            ),
+            // Test a Facebook crawler
+            array(
+                'user_agent'         => 'Twitterbot/1.0',
+                'uri'                => 'http://www.example.com',
+                'referer'            => 'http://google.com',
+                'ignored_extensions' => array(),
+                'whitelist'          => array(),
+                'blacklist'          => array(),
+                'should_prerender'   => true
+            ),
+            // Test a Twitter crawler
+            array(
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
@@ -232,7 +252,7 @@ class PrerenderListenerTest extends TestCase
         $request  = new HttpRequest();
         $request->setUri($uri);
         $request->getHeaders()->addHeaderLine('User-Agent', $userAgent)
-                              ->addHeaderLine('Referer', $referer);
+            ->addHeaderLine('Referer', $referer);
 
         $listener = new PrerenderListener($moduleOptions);
 
@@ -289,17 +309,17 @@ class PrerenderListenerTest extends TestCase
         // Mock the client
         $clientMock = $this->getMock('Zend\Http\Client');
         $clientMock->expects($this->once())
-                   ->method('setUri')
-                   ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
-                   ->will($this->returnValue($clientMock));
+            ->method('setUri')
+            ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
+            ->will($this->returnValue($clientMock));
 
         $clientMock->expects($this->once())
-                   ->method('setMethod')
-                   ->with('GET');
+            ->method('setMethod')
+            ->with('GET');
 
         $clientMock->expects($this->once())
-                   ->method('send')
-                   ->will($this->returnValue($this->getMock('Zend\Stdlib\ResponseInterface')));
+            ->method('send')
+            ->will($this->returnValue($this->getMock('Zend\Stdlib\ResponseInterface')));
 
         $listener->setHttpClient($clientMock);
 
