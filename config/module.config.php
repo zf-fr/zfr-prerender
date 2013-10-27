@@ -74,10 +74,11 @@ return array(
             '.iso',
             '.flv',
             '.m4v',
-            '.torrent'
+            '.torrent',
+            'xml'
         ),
 
-        // Whitelist and blacklist
+        // Whitelist and blacklist URLs
         'whitelist_urls' => array(),
         'blacklist_urls' => array()
     )

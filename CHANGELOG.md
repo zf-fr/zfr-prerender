@@ -1,3 +1,7 @@
+# 1.1.2
+
+* Add "xml" extension to blacklist to prevent a problem that can occur with sitemap
+
 # 1.1.1
 
 * Add Twitterbot User-Agent
