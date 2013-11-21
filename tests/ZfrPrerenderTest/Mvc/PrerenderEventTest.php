@@ -33,7 +33,7 @@ class PrerenderEventTest extends TestCase
     {
         $request  = $this->getMock('Zend\Http\Request');
         $response = $this->getMock('Zend\Http\Response');
-        
+
         $event = new PrerenderEvent();
         $event->setRequest($request);
         $event->setResponse($response);
