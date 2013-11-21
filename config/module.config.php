@@ -28,11 +28,12 @@ return array(
         // Prerender service URL
         'prerender_url' => 'http://prerender.herokuapp.com',
 
-        // Some widely used crawler user agents
+        // Some widely used crawler user agents (Google Bot, Yahoo and BingBot are not in this list because
+        // we support _escaped_fragment_ and want to ensure people aren't penalized for cloaking.
         'crawler_user_agents' => array(
-            'googlebot',
-            'yahoo',
-            'bingbot',
+            // 'googlebot',
+            // 'yahoo',
+            // 'bingbot',
             'baiduspider',
             'facebookexternalhit',
             'twitterbot'

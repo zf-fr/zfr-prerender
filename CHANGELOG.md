@@ -1,3 +1,8 @@
+# 2.0.0
+
+* [BC] Remove Google Bot, Yahoo and BingBot from the crawler's list, because those search engines
+support _escaped_fragment_ and want to ensure people aren't penalized for cloaking
+
 # 1.1.2
 
 * Add "xml" extension to blacklist to prevent a problem that can occur with sitemap
