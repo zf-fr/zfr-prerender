@@ -166,8 +166,8 @@ public function prerenderPre(PrerenderEvent $event)
 {
     $request = $event->getRequest();
 
-    // Check from your cache if you have already the response
-    // ...
+    // Check from your cache if you have already the content
+    // $content = ...
 
     $response = new Response();
     $response->setStatusCode(200);
