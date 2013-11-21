@@ -118,7 +118,7 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
 
         $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, $prerenderEvent);
 
-        if ($responses->stopped() && $responses->last() instanceof HttpResponse) {
+        if ($responses->last() instanceof HttpResponse) {
             return $responses->last();
         }
 
@@ -255,7 +255,7 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
      */
     public function setEventManager(EventManagerInterface $eventManager)
     {
-        $eventManager->setIdentifiers(array(__CLASS__, get_called_class($this)));
+        $eventManager->setIdentifiers(array(__CLASS__, get_class($this)));
         $this->eventManager = $eventManager;
     }
 
