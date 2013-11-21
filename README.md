@@ -130,6 +130,62 @@ return array(
 > Note: remember to specify URL here and not ZF2 route names. This occur because ZfrPrerender registers a listener
 that happen very early in the MVC process, before the routing is actually done.
 
+### Events
+
+`ZfrPrerender\Mvc\PrerenderListener` triggers two events:
+
+1. `ZfrPrerender\Mvc\PrerenderListener::EVENT_PRERENDER_PRE`: this event is triggered before actually making the
+request to Prerender service. If you return a `Zend\Http\Response` object from the listener attached to this event,
+it will immediately return this response, hence avoiding a new request to the Prerender service.
+2. `ZfrPrerender\Mvc\PrerenderListener::EVENT_PRERENDER_POST`: this event is triggered once the response from the
+Prerender service is made. This allows you to cache it (for instance in Memcached).
+
+Listeners attached to those two events receive an instance of `ZfrPrerender\Mvc\PrerenderEvent`. Here is an example
+that shows you how to register listeners using the shared event manager. In your `Module.php` class:
+
+```php
+public function onBootstrap(MvcEvent $event)
+{
+    $eventManager  = $event->getTarget()->getEventManager();
+    $sharedManager = $eventManager->getSharedManager();
+
+    $sharedManager->attach(
+        'ZfrPrerender\Mvc\PrerenderListener',
+        PrerenderListener::EVENT_PRERENDER_PRE,
+        array($this, 'prerenderPre')
+    );
+
+    $sharedManager->attach(
+        'ZfrPrerender\Mvc\PrerenderListener',
+        PrerenderListener::EVENT_PRERENDER_POST,
+        array($this, 'prerenderPost')
+    );
+}
+
+public function prerenderPre(PrerenderEvent $event)
+{
+    $request = $event->getRequest();
+
+    // Check from your cache if you have already the content
+    // $content = ...
+
+    $response = new Response();
+    $response->setStatusCode(200);
+    $response->setContent($content);
+
+    return $response;
+}
+
+public function prerenderPost(PrerenderEvent $event)
+{
+    // This is the response we get from the Prerender service
+    $response = $event->getResponse();
+
+    // You could get the body and put it in cache
+    // ...
+}
+```
+
 ### Testing
 
 If you want to make sure your pages are rendering correctly:

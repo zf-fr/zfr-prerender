@@ -19,9 +19,12 @@
 namespace ZfrPrerender\Mvc;
 
 use Zend\EventManager\AbstractListenerAggregate;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Http\Client as HttpClient;
 use Zend\Http\Request as HttpRequest;
+use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
 use Zend\Stdlib\ResponseInterface;
@@ -35,7 +38,7 @@ use ZfrPrerender\Options\ModuleOptions;
  * @author Michaël Gallego
  * @licence MIT
  */
-class PrerenderListener extends AbstractListenerAggregate
+class PrerenderListener extends AbstractListenerAggregate implements EventManagerAwareInterface
 {
     /**
      * @var ModuleOptions
@@ -46,6 +49,11 @@ class PrerenderListener extends AbstractListenerAggregate
      * @var HttpClient
      */
     protected $httpClient;
+
+    /**
+     * @var EventManagerInterface
+     */
+    protected $eventManager;
 
     /**
      * @param ModuleOptions $options
@@ -89,7 +97,7 @@ class PrerenderListener extends AbstractListenerAggregate
     }
 
     /**
-     * Prerender the page
+     * Pre-render the page
      *
      * @param  MvcEvent $event
      * @return void|ResponseInterface
@@ -103,14 +111,29 @@ class PrerenderListener extends AbstractListenerAggregate
         }
 
         $event->stopPropagation(true);
+        $eventManager = $this->getEventManager();
 
+        // Trigger a pre-event (for creating a response from cache, for instance)
+        $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, new PrerenderEvent($request));
+
+        if ($responses->last() instanceof HttpResponse) {
+            return $responses->last();
+        }
+
+        // Make the actual request to Prerender service
         $client = $this->getHttpClient();
         $uri    = rtrim($this->moduleOptions->getPrerenderUrl(), '/') . '/' . $request->getUriString();
 
         $client->setUri($uri)
                ->setMethod(HttpRequest::METHOD_GET);
 
-        return $client->send();
+        $response = $client->send();
+
+        // Trigger a post-event (for putting in cache the response, for instance)
+        $prerenderEvent = new PrerenderEvent($request, $response);
+        $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_POST, $prerenderEvent);
+
+        return $prerenderEvent->getResponse();
     }
 
     /**
@@ -225,5 +248,26 @@ class PrerenderListener extends AbstractListenerAggregate
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEventManager(EventManagerInterface $eventManager)
+    {
+        $eventManager->setIdentifiers(array(__CLASS__, get_class($this)));
+        $this->eventManager = $eventManager;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEventManager()
+    {
+        if (null === $this->eventManager) {
+            $this->setEventManager(new EventManager());
+        }
+
+        return $this->eventManager;
     }
 }

@@ -20,8 +20,10 @@ namespace ZfrPrerenderTest\Mvc;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\EventManager\EventManager;
+use Zend\EventManager\ResponseCollection;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
+use ZfrPrerender\Mvc\PrerenderEvent;
 use ZfrPrerender\Mvc\PrerenderListener;
 use ZfrPrerender\Options\ModuleOptions;
 use ZfrPrerenderTest\Util\ServiceManagerFactory;
@@ -289,11 +291,49 @@ class PrerenderListenerTest extends TestCase
 
         $clientMock->expects($this->once())
                    ->method('send')
-                   ->will($this->returnValue($this->getMock('Zend\Stdlib\ResponseInterface')));
+                   ->will($this->returnValue($this->getMock('Zend\Http\Response')));
 
         $listener->setHttpClient($clientMock);
 
         $response = $listener->prerenderPage($mvcEvent);
         $this->assertInstanceOf('Zend\Stdlib\ResponseInterface', $response);
+    }
+
+    public function testSetCorrectIdentifiers()
+    {
+        $listener = new PrerenderListener(new ModuleOptions());
+        $listener->setEventManager(new EventManager());
+
+        $eventManager = $listener->getEventManager();
+
+        $this->assertEquals(array('ZfrPrerender\Mvc\PrerenderListener'), $eventManager->getIdentifiers());
+    }
+
+    public function testTriggerEventsAndStopIfResponseIsReturned()
+    {
+        $mvcEvent   = new MvcEvent();
+        $request    = new HttpRequest();
+
+        $request->setUri('http://www.example.com');
+        $request->getHeaders()->addHeaderLine('User-Agent', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)');
+        $mvcEvent->setRequest($request);
+
+        $eventManager = $this->getMock('Zend\EventManager\EventManagerInterface');
+
+        $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');
+
+        $listener = new PrerenderListener($moduleOptions);
+        $listener->setEventManager($eventManager);
+
+        $response           = $this->getMock('Zend\Http\Response');
+        $responseCollection = new ResponseCollection();
+        $responseCollection->push($response);
+
+        $eventManager->expects($this->once())
+                     ->method('trigger')
+                     ->with(PrerenderEvent::EVENT_PRERENDER_PRE)
+                     ->will($this->returnValue($responseCollection));
+
+        $this->assertSame($response, $listener->prerenderPage($mvcEvent));
     }
 }
