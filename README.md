@@ -58,7 +58,10 @@ With this config, here is how ZfrPrerender will proxy the "https://google.com" r
 #### Crawler user-agents
 
 ZfrPrerender decides to pre-render based on the User-Agent string to check if a request comes from a bot or not. By
-default, those user agents are registered: `googlebot`, `yahoo`, `bingbot`, `baidu` and `twitterbot`.
+default, those user agents are registered: `baidu`, `facebookexternalhit` and `twitterbot`.
+
+> GoogleBot, Yahoo and BingBot are not in the list starting from ZfrPrerender 2.0 as those search engines support
+the _escaped_fragment_ approach, and we want to ensure people are not [penalized for cloacking](http://fr.wikipedia.org/wiki/Cloaking).
 
 You can add other User-Agent string to evaluate using this sample configuration:
 

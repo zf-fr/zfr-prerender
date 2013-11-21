@@ -56,36 +56,6 @@ class PrerenderListenerTest extends TestCase
                 'blacklist'          => array(),
                 'should_prerender'   => false
             ),
-            // Test a Google Bot crawler
-            array(
-                'user_agent'         => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-                'uri'                => 'http://www.example.com',
-                'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
-                'should_prerender'   => true
-            ),
-            // Test a Yahoo Bot crawler
-            array(
-                'user_agent'         => 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)',
-                'uri'                => 'http://www.example.com',
-                'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
-                'should_prerender'   => true
-            ),
-            // Test a Bing Bot crawler
-            array(
-                'user_agent'         => 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
-                'uri'                => 'http://www.example.com',
-                'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
-                'should_prerender'   => true
-            ),
             // Test a Baidu Bot crawler
             array(
                 'user_agent'         => 'facebookexternalhit/1.1 (+http(s)://www.facebook.com/externalhit_uatext.php)',
@@ -300,7 +270,7 @@ class PrerenderListenerTest extends TestCase
         $request    = new HttpRequest();
 
         $request->setUri('http://www.example.com');
-        $request->getHeaders()->addHeaderLine('User-Agent', 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)');
+        $request->getHeaders()->addHeaderLine('User-Agent', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)');
         $mvcEvent->setRequest($request);
 
         $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');

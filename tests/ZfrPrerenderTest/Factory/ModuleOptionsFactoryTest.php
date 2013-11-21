@@ -37,7 +37,7 @@ class ModuleOptionsFactoryTest extends TestCase
 
         $this->assertInstanceOf('ZfrPrerender\Options\ModuleOptions', $options);
         $this->assertEquals('http://prerender.herokuapp.com', $options->getPrerenderUrl());
-        $this->assertEquals(array('googlebot', 'yahoo', 'bingbot', 'baiduspider', 'facebookexternalhit', 'twitterbot'), $options->getCrawlerUserAgents());
+        $this->assertEquals(array('baiduspider', 'facebookexternalhit', 'twitterbot'), $options->getCrawlerUserAgents());
         $this->assertEmpty($options->getWhitelistUrls());
         $this->assertEmpty($options->getBlacklistUrls());
     }
