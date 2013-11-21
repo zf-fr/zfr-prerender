@@ -2,6 +2,7 @@
 
 * [BC] Remove Google Bot, Yahoo and BingBot from the crawler's list, because those search engines
 support _escaped_fragment_ and want to ensure people aren't penalized for cloaking
+* The priority the listener is registered has been lowered from 10000 to 1000.
 
 # 1.1.2
 

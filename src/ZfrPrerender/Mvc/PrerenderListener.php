@@ -60,7 +60,7 @@ class PrerenderListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'prerenderPage'), 10000);
+        $this->listeners[] = $events->attach(MvcEvent::EVENT_ROUTE, array($this, 'prerenderPage'), 1000);
     }
 
     /**
