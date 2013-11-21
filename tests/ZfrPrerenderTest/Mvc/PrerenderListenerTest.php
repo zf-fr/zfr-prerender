@@ -21,6 +21,7 @@ namespace ZfrPrerenderTest\Mvc;
 use PHPUnit_Framework_TestCase as TestCase;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\ResponseCollection;
+use Zend\Http\Client;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrPrerender\Mvc\PrerenderEvent;
@@ -335,5 +336,51 @@ class PrerenderListenerTest extends TestCase
                      ->will($this->returnValue($responseCollection));
 
         $this->assertSame($response, $listener->prerenderPage($mvcEvent));
+    }
+
+    public function testAddHeaderIfTokenIsSpecified()
+    {
+        $mvcEvent   = new MvcEvent();
+        $request    = new HttpRequest();
+
+        $request->setUri('http://www.example.com');
+        $request->getHeaders()->addHeaderLine('User-Agent', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)');
+        $mvcEvent->setRequest($request);
+
+        /** @var \ZfrPrerender\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');
+        $moduleOptions->setPrerenderToken('abc');
+
+        $prerenderRequest = new HttpRequest();
+        $listener         = new PrerenderListener($moduleOptions);
+
+        // Mock the client
+        $clientMock = $this->getMock('Zend\Http\Client');
+        $clientMock->expects($this->once())
+                   ->method('setUri')
+                   ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
+                   ->will($this->returnValue($clientMock));
+
+        $clientMock->expects($this->once())
+                   ->method('setMethod')
+                   ->with('GET');
+
+        $clientMock->expects($this->once())
+                   ->method('send')
+                   ->will($this->returnValue($this->getMock('Zend\Http\Response')));
+
+        $clientMock->expects($this->once())
+                   ->method('getRequest')
+                   ->will($this->returnValue($prerenderRequest));
+
+        $listener->setHttpClient($clientMock);
+
+        $listener->prerenderPage($mvcEvent);
+
+        $this->assertTrue($prerenderRequest->getHeaders()->has('X-Prerender-Token'));
+        $this->assertEquals(
+            $prerenderRequest->getHeader('X-Prerender-Token')->getFieldValue(),
+            $moduleOptions->getPrerenderToken()
+        );
     }
 }

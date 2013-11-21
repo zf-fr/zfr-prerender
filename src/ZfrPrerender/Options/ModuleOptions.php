@@ -32,6 +32,11 @@ class ModuleOptions extends AbstractOptions
     protected $prerenderUrl;
 
     /**
+     * @var string
+     */
+    protected $prerenderToken;
+
+    /**
      * @var array
      */
     protected $crawlerUserAgents = array();
@@ -70,6 +75,27 @@ class ModuleOptions extends AbstractOptions
     public function getPrerenderUrl()
     {
         return $this->prerenderUrl;
+    }
+
+    /**
+     * Set the optional Prerender token (for analytics)
+     *
+     * @param  string $prerenderToken
+     * @return void
+     */
+    public function setPrerenderToken($prerenderToken)
+    {
+        $this->prerenderToken = (string) $prerenderToken;
+    }
+
+    /**
+     * Get the optional Prerender token (for analytics)
+     *
+     * @return string
+     */
+    public function getPrerenderToken()
+    {
+        return $this->prerenderToken;
     }
 
     /**

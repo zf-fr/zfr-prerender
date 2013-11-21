@@ -42,6 +42,9 @@ class ModuleOptionsTest extends TestCase
         $moduleOptions->setPrerenderUrl('http://myprerender.com');
         $this->assertEquals('http://myprerender.com', $moduleOptions->getPrerenderUrl());
 
+        $moduleOptions->setPrerenderToken('abc');
+        $this->assertEquals('abc', $moduleOptions->getPrerenderToken());
+
         $moduleOptions->setWhitelistUrls(array('/users/*'));
         $this->assertEquals(array('/users/*'), $moduleOptions->getWhitelistUrls());
 

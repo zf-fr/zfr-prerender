@@ -27,6 +27,11 @@ return array(
         // 'prerender_url' => '',
 
         /**
+         * An optional token you get from Prerender website to provide analytics
+         */
+        // 'prerender_token' => '',
+
+        /**
          * BOT crawler agents. You can add any crawlers you want
          *
          * This module is already configured with some crawlers (check the module.config.php file)

@@ -127,6 +127,10 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         $client->setUri($uri)
                ->setMethod(HttpRequest::METHOD_GET);
 
+        if ($prerenderToken = $this->moduleOptions->getPrerenderToken()) {
+            $client->getRequest()->getHeaders()->addHeaderLine('X-Prerender-Token', $prerenderToken);
+        }
+
         $response = $client->send();
 
         // Trigger a post-event (for putting in cache the response, for instance)

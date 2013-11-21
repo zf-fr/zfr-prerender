@@ -1,3 +1,7 @@
+# 2.1.0
+
+* Allow to add a Prerender token in module options (for analytics)
+
 # 2.0.0
 
 * [BC] Remove Google Bot, Yahoo and BingBot from the crawler's list, because those search engines
