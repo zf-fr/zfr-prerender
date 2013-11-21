@@ -113,15 +113,14 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         $event->stopPropagation(true);
         $eventManager = $this->getEventManager();
 
-        $prerenderEvent = new PrerenderEvent();
-        $prerenderEvent->setRequest($request);
-
-        $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, $prerenderEvent);
+        // Trigger a pre-event (for creating a response from cache, for instance)
+        $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, new PrerenderEvent($request));
 
         if ($responses->last() instanceof HttpResponse) {
             return $responses->last();
         }
 
+        // Make the actual request to Prerender service
         $client = $this->getHttpClient();
         $uri    = rtrim($this->moduleOptions->getPrerenderUrl(), '/') . '/' . $request->getUriString();
 
@@ -130,7 +129,8 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
 
         $response = $client->send();
 
-        $prerenderEvent->setResponse($response);
+        // Trigger a post-event (for putting in cache the response, for instance)
+        $prerenderEvent = new PrerenderEvent($request, $response);
         $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_POST, $prerenderEvent);
 
         return $prerenderEvent->getResponse();

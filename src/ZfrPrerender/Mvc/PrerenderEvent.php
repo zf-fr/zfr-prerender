@@ -42,19 +42,18 @@ class PrerenderEvent extends Event
     protected $request;
 
     /**
-     * @var HttpResponse
+     * @var HttpResponse|null
      */
     protected $response;
 
     /**
-     * Set the request
-     *
-     * @param  HttpRequest $request
-     * @return void
+     * @param HttpRequest  $request
+     * @param HttpResponse $response
      */
-    public function setRequest(HttpRequest $request)
+    public function __construct(HttpRequest $request, HttpResponse $response = null)
     {
-        $this->request = $request;
+        $this->request  = $request;
+        $this->response = $response;
     }
 
     /**
@@ -68,20 +67,9 @@ class PrerenderEvent extends Event
     }
 
     /**
-     * Set the response
-     *
-     * @param  HttpResponse $response
-     * @return void
-     */
-    public function setResponse(HttpResponse $response)
-    {
-        $this->response = $response;
-    }
-
-    /**
      * Get the response
      *
-     * @return HttpResponse
+     * @return HttpResponse|null
      */
     public function getResponse()
     {

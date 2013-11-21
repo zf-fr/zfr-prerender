@@ -29,14 +29,12 @@ use ZfrPrerender\Mvc\PrerenderEvent;
  */
 class PrerenderEventTest extends TestCase
 {
-    public function testGettersAndSetters()
+    public function testGetters()
     {
         $request  = $this->getMock('Zend\Http\Request');
         $response = $this->getMock('Zend\Http\Response');
 
-        $event = new PrerenderEvent();
-        $event->setRequest($request);
-        $event->setResponse($response);
+        $event = new PrerenderEvent($request, $response);
 
         $this->assertSame($request, $event->getRequest());
         $this->assertSame($response, $event->getResponse());
