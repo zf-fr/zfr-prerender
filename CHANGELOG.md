@@ -1,3 +1,9 @@
+# 3.0.0
+
+* Minimum PHP version has been raised to PHP 5.4 to take advantage of methods needed to decompress Gzip
+* ZfrPrerender can now returns Gzip responses from Prerender
+* New crawler user agents were added by default
+
 # 2.1.0
 
 * Allow to add a Prerender token in module options (for analytics)

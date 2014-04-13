@@ -104,9 +104,9 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
      */
     public function prerenderPage(MvcEvent $event)
     {
-        $request = $event->getRequest();
+        $originalRequest = $event->getRequest();
 
-        if (!$this->shouldPrerenderPage($request)) {
+        if (!$this->shouldPrerenderPage($originalRequest)) {
             return;
         }
 
@@ -114,30 +114,35 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         $eventManager = $this->getEventManager();
 
         // Trigger a pre-event (for creating a response from cache, for instance)
-        $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, new PrerenderEvent($request));
+        $responses = $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_PRE, new PrerenderEvent($originalRequest));
 
         if ($responses->last() instanceof HttpResponse) {
             return $responses->last();
         }
 
         // Make the actual request to Prerender service
-        $client = $this->getHttpClient();
-        $uri    = rtrim($this->moduleOptions->getPrerenderUrl(), '/') . '/' . $request->getUriString();
+        $client    = $this->getHttpClient();
+        $uri       = rtrim($this->moduleOptions->getPrerenderUrl(), '/') . '/' . $originalRequest->getUriString();
+        $userAgent = $originalRequest->getHeaders()->get('User-Agent')->getFieldValue();
 
         $client->setUri($uri)
                ->setMethod(HttpRequest::METHOD_GET);
 
+        $request = $client->getRequest();
+        $request->getHeaders()->addHeaderLine('User-Agent', $userAgent)
+                              ->addHeaderLine('Accept-Encoding', 'gzip');
+
         if ($prerenderToken = $this->moduleOptions->getPrerenderToken()) {
-            $client->getRequest()->getHeaders()->addHeaderLine('X-Prerender-Token', $prerenderToken);
+            $request->getHeaders()->addHeaderLine('X-Prerender-Token', $prerenderToken);
         }
 
-        $response = $client->send();
+        $response = $client->send($request);
 
         // Trigger a post-event (for putting in cache the response, for instance)
         $prerenderEvent = new PrerenderEvent($request, $response);
         $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_POST, $prerenderEvent);
 
-        return $prerenderEvent->getResponse();
+        return $this->decompressResponse($prerenderEvent->getResponse());
     }
 
     /**
@@ -252,6 +257,27 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         }
 
         return false;
+    }
+
+    /**
+     * Decompress the response if it contains Content-Encoding to gzip
+     *
+     * @param  HttpResponse $response
+     * @return HttpResponse
+     */
+    private function decompressResponse(HttpResponse $response)
+    {
+        $headers = $response->getHeaders();
+
+        if ($headers->get('Content-Encoding')->getFieldValue() !== 'gzip') {
+            return $response;
+        }
+
+        $decode = gzdecode($response->getBody());
+
+        $response->setContent($decode);
+        $headers->addHeaderLine('Content-Length', strlen($decode));
+        $headers->removeHeader($headers->get('Content-Encoding'));
     }
 
     /**
