@@ -472,8 +472,9 @@ class PrerenderListenerTest extends TestCase
 
         $listener->setHttpClient($clientMock);
 
-        $listener->prerenderPage($mvcEvent);
+        $result = $listener->prerenderPage($mvcEvent);
 
+        $this->assertInstanceOf('Zend\Http\Response', $result);
         $this->assertFalse($headers->has('Content-Encoding'), 'Ensure header has been removed');
         $this->assertTrue($headers->has('Content-Length'), 'Ensure content length has been added');
         $this->assertEquals(strlen('original value'), $headers->get('Content-Length')->getFieldValue());

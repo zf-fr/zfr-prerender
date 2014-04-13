@@ -278,6 +278,8 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         $response->setContent($decode);
         $headers->addHeaderLine('Content-Length', strlen($decode));
         $headers->removeHeader($headers->get('Content-Encoding'));
+
+        return $response;
     }
 
     /**
