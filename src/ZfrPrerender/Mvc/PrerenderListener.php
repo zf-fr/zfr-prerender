@@ -142,7 +142,15 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
         $prerenderEvent = new PrerenderEvent($request, $response);
         $eventManager->trigger(PrerenderEvent::EVENT_PRERENDER_POST, $prerenderEvent);
 
-        return $this->decompressResponse($prerenderEvent->getResponse());
+        $originalRequestHeaders = $originalRequest->getHeaders();
+
+        if ($originalRequestHeaders->has('Accept-Encoding')
+            && $originalRequestHeaders->get('Accept-Encoding')->getFieldValue() === 'gzip'
+        ) {
+            return $this->decompressResponse($prerenderEvent->getResponse());
+        } else {
+            return $prerenderEvent->getResponse();
+        }
     }
 
     /**
@@ -268,12 +276,7 @@ class PrerenderListener extends AbstractListenerAggregate implements EventManage
     private function decompressResponse(HttpResponse $response)
     {
         $headers = $response->getHeaders();
-
-        if ($headers->get('Content-Encoding')->getFieldValue() !== 'gzip') {
-            return $response;
-        }
-
-        $decode = gzdecode($response->getBody());
+        $decode  = gzdecode($response->getBody());
 
         $response->setContent($decode);
         $headers->addHeaderLine('Content-Length', strlen($decode));

@@ -313,13 +313,6 @@ class PrerenderListenerTest extends TestCase
             }))
                    ->will($this->returnValue($response));
 
-        $headers = new Headers();
-        $headers->addHeaderLine('Content-Encoding', 'html');
-
-        $response->expects($this->once())
-                 ->method('getHeaders')
-                 ->will($this->returnValue($headers));
-
         $listener->setHttpClient($clientMock);
 
         $response = $listener->prerenderPage($mvcEvent);
@@ -401,13 +394,6 @@ class PrerenderListenerTest extends TestCase
                    ->method('getRequest')
                    ->will($this->returnValue($prerenderRequest));
 
-        $headers = new Headers();
-        $headers->addHeaderLine('Content-Encoding', 'html');
-
-        $response->expects($this->once())
-                 ->method('getHeaders')
-                 ->will($this->returnValue($headers));
-
         $listener->setHttpClient($clientMock);
 
         $listener->prerenderPage($mvcEvent);
@@ -426,6 +412,7 @@ class PrerenderListenerTest extends TestCase
 
         $request->setUri('http://www.example.com');
         $request->getHeaders()->addHeaderLine('User-Agent', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)');
+        $request->getHeaders()->addHeaderLine('Accept-Encoding', 'gzip');
         $mvcEvent->setRequest($request);
 
         /** @var \ZfrPrerender\Options\ModuleOptions $moduleOptions */
