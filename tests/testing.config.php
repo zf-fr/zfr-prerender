@@ -16,6 +16,6 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'zfr_prerender' => array(),
-);
+return [
+    'zfr_prerender' => [],
+];

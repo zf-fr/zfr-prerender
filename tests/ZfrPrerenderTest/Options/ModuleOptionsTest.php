@@ -33,11 +33,11 @@ class ModuleOptionsTest extends TestCase
     {
         $moduleOptions = new ModuleOptions();
 
-        $moduleOptions->setCrawlerUserAgents(array('baidu'));
-        $this->assertEquals(array('baidu'), $moduleOptions->getCrawlerUserAgents());
+        $moduleOptions->setCrawlerUserAgents(['baidu']);
+        $this->assertEquals(['baidu'], $moduleOptions->getCrawlerUserAgents());
 
-        $moduleOptions->setIgnoredExtensions(array('.jpg'));
-        $this->assertEquals(array('.jpg'), $moduleOptions->getIgnoredExtensions());
+        $moduleOptions->setIgnoredExtensions(['.jpg']);
+        $this->assertEquals(['.jpg'], $moduleOptions->getIgnoredExtensions());
 
         $moduleOptions->setPrerenderUrl('http://myprerender.com');
         $this->assertEquals('http://myprerender.com', $moduleOptions->getPrerenderUrl());
@@ -45,10 +45,10 @@ class ModuleOptionsTest extends TestCase
         $moduleOptions->setPrerenderToken('abc');
         $this->assertEquals('abc', $moduleOptions->getPrerenderToken());
 
-        $moduleOptions->setWhitelistUrls(array('/users/*'));
-        $this->assertEquals(array('/users/*'), $moduleOptions->getWhitelistUrls());
+        $moduleOptions->setWhitelistUrls(['/users/*']);
+        $this->assertEquals(['/users/*'], $moduleOptions->getWhitelistUrls());
 
-        $moduleOptions->setBlacklistUrls(array('/users/*'));
-        $this->assertEquals(array('/users/*'), $moduleOptions->getBlacklistUrls());
+        $moduleOptions->setBlacklistUrls(['/users/*']);
+        $this->assertEquals(['/users/*'], $moduleOptions->getBlacklistUrls());
     }
 }

@@ -16,21 +16,21 @@
  * and is licensed under the MIT license.
  */
 
-return array(
-    'service_manager' => array(
-        'factories' => array(
+return [
+    'service_manager' => [
+        'factories' => [
             'ZfrPrerender\Mvc\PrerenderListener' => 'ZfrPrerender\Factory\PrerenderListenerFactory',
             'ZfrPrerender\Options\ModuleOptions' => 'ZfrPrerender\Factory\ModuleOptionsFactory'
-        )
-    ),
+        ]
+    ],
 
-    'zfr_prerender' => array(
+    'zfr_prerender' => [
         // Prerender service URL
         'prerender_url' => 'http://prerender.herokuapp.com',
 
         // Some widely used crawler user agents (Google Bot, Yahoo and BingBot are not in this list because
         // we support _escaped_fragment_ and want to ensure people aren't penalized for cloaking).
-        'crawler_user_agents' => array(
+        'crawler_user_agents' => [
             'baiduspider',
             'facebookexternalhit',
             'twitterbot',
@@ -41,10 +41,10 @@ return array(
             'quora link preview',
             'showyoubot',
             'outbrain'
-        ),
+        ],
 
         // Ignored extensions
-        'ignored_extensions' => array(
+        'ignored_extensions' => [
             '.js',
             '.css',
             '.less',
@@ -81,10 +81,10 @@ return array(
             '.m4v',
             '.torrent',
             '.xml'
-        ),
+        ],
 
         // Whitelist and blacklist URLs
-        'whitelist_urls' => array(),
-        'blacklist_urls' => array()
-    )
-);
+        'whitelist_urls' => [],
+        'blacklist_urls' => []
+    ]
+];

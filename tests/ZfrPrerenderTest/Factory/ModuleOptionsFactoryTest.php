@@ -35,10 +35,10 @@ class ModuleOptionsFactoryTest extends TestCase
         $serviceManager = ServiceManagerFactory::getServiceManager();
         $options        = $serviceManager->get('ZfrPrerender\Options\ModuleOptions');
 
-        $expectedCrawlerUserAgents = array(
+        $expectedCrawlerUserAgents = [
             'baiduspider', 'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot',
             'embedly', 'bufferbot', 'quora link preview', 'showyoubot', 'outbrain'
-        );
+        ];
 
         $this->assertInstanceOf('ZfrPrerender\Options\ModuleOptions', $options);
         $this->assertEquals('http://prerender.herokuapp.com', $options->getPrerenderUrl());

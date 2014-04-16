@@ -39,22 +39,22 @@ class ModuleOptions extends AbstractOptions
     /**
      * @var array
      */
-    protected $crawlerUserAgents = array();
+    protected $crawlerUserAgents = [];
 
     /**
      * @var array
      */
-    protected $ignoredExtensions = array();
+    protected $ignoredExtensions = [];
 
     /**
      * @var array
      */
-    protected $whitelistUrls = array();
+    protected $whitelistUrls = [];
 
     /**
      * @var array
      */
-    protected $blacklistUrls = array();
+    protected $blacklistUrls = [];
 
     /**
      * Set the prerender service URL

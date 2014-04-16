@@ -40,177 +40,177 @@ class PrerenderListenerTest extends TestCase
 {
     public function shouldRenderProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'user_agent'         => '',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a non-bot crawler
-            array(
+            [
                 'user_agent'         => 'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a Baidu Bot crawler
-            array(
+            [
                 'user_agent'         => 'facebookexternalhit/1.1 (+http(s)://www.facebook.com/externalhit_uatext.php)',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a Facebook crawler
-            array(
+            [
                 'user_agent'         => 'Twitterbot/1.0',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a Twitter crawler
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler with ignored_extension
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/screen.css',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array('.jpg', '.css'),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => ['.jpg', '.css'],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler that is whitelisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array('example.com'),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => ['example.com'],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler that is whitelisted with more complex regex
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/users/michael',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array('/users/.*'),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => ['/users/.*'],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler that is not whitelisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/foo',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array('/bar'),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => ['/bar'],
+                'blacklist'          => [],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler that is blacklisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/foo',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array('/foo'),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => ['/foo'],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler that is blacklisted with more complex regex
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/users/julia',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array('/users/*'),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => ['/users/*'],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler that is not blacklisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/bar',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array('/foo'),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => ['/foo'],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler and a referer that is blacklisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/foo',
                 'referer'            => '/search',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array('/search'),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => ['/search'],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler and a referer that is not blacklisted
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/foo',
                 'referer'            => '/search',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array(),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => [],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler and a referer that is not blacklisted by a regex
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/foo',
                 'referer'            => '/profile/search',
-                'ignored_extensions' => array(),
-                'whitelist'          => array(),
-                'blacklist'          => array('^/search', 'help'),
+                'ignored_extensions' => [],
+                'whitelist'          => [],
+                'blacklist'          => ['^/search', 'help'],
                 'should_prerender'   => true
-            ),
+            ],
             // Test a bot crawler that combines whitelist and blacklist (1)
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/users/julia',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array('/users/*'),
-                'blacklist'          => array('/users/julia'),
+                'ignored_extensions' => [],
+                'whitelist'          => ['/users/*'],
+                'blacklist'          => ['/users/julia'],
                 'should_prerender'   => false
-            ),
+            ],
             // Test a bot crawler that combines whitelist and blacklist (2)
-            array(
+            [
                 'user_agent'         => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
                 'uri'                => 'http://www.example.com/users/julia',
                 'referer'            => 'http://google.com',
-                'ignored_extensions' => array(),
-                'whitelist'          => array('/users/*'),
-                'blacklist'          => array('/users/michael'),
+                'ignored_extensions' => [],
+                'whitelist'          => ['/users/*'],
+                'blacklist'          => ['/users/michael'],
                 'should_prerender'   => true
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -326,7 +326,7 @@ class PrerenderListenerTest extends TestCase
 
         $eventManager = $listener->getEventManager();
 
-        $this->assertEquals(array('ZfrPrerender\Mvc\PrerenderListener'), $eventManager->getIdentifiers());
+        $this->assertEquals(['ZfrPrerender\Mvc\PrerenderListener'], $eventManager->getIdentifiers());
     }
 
     public function testTriggerEventsAndStopIfResponseIsReturned()
