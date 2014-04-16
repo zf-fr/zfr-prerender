@@ -22,6 +22,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\ResponseCollection;
 use Zend\Http\Client;
+use Zend\Http\Headers;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\MvcEvent;
 use ZfrPrerender\Mvc\PrerenderEvent;
@@ -279,6 +280,9 @@ class PrerenderListenerTest extends TestCase
         $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');
         $listener      = new PrerenderListener($moduleOptions);
 
+        $prerenderRequest = new HttpRequest();
+        $response         = $this->getMock('Zend\Http\Response');
+
         // Mock the client
         $clientMock = $this->getMock('Zend\Http\Client');
         $clientMock->expects($this->once())
@@ -291,8 +295,23 @@ class PrerenderListenerTest extends TestCase
                    ->with('GET');
 
         $clientMock->expects($this->once())
+                   ->method('getRequest')
+                   ->will($this->returnValue($prerenderRequest));
+
+        $clientMock->expects($this->once())
                    ->method('send')
-                   ->will($this->returnValue($this->getMock('Zend\Http\Response')));
+                   ->with($this->callback(function(HttpRequest $request) {
+                $headers = $request->getHeaders();
+
+                $this->assertEquals(
+                    'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
+                    $headers->get('User-Agent')->getFieldValue()
+                );
+                $this->assertEquals('gzip', $headers->get('Accept-Encoding')->getFieldValue());
+
+                return true;
+            }))
+                   ->will($this->returnValue($response));
 
         $listener->setHttpClient($clientMock);
 
@@ -354,6 +373,8 @@ class PrerenderListenerTest extends TestCase
         $prerenderRequest = new HttpRequest();
         $listener         = new PrerenderListener($moduleOptions);
 
+        $response = $this->getMock('Zend\Http\Response');
+
         // Mock the client
         $clientMock = $this->getMock('Zend\Http\Client');
         $clientMock->expects($this->once())
@@ -367,7 +388,7 @@ class PrerenderListenerTest extends TestCase
 
         $clientMock->expects($this->once())
                    ->method('send')
-                   ->will($this->returnValue($this->getMock('Zend\Http\Response')));
+                   ->will($this->returnValue($response));
 
         $clientMock->expects($this->once())
                    ->method('getRequest')
@@ -382,5 +403,67 @@ class PrerenderListenerTest extends TestCase
             $prerenderRequest->getHeader('X-Prerender-Token')->getFieldValue(),
             $moduleOptions->getPrerenderToken()
         );
+    }
+
+    public function testCanUncompressGzipResponses()
+    {
+        $mvcEvent   = new MvcEvent();
+        $request    = new HttpRequest();
+
+        $request->setUri('http://www.example.com');
+        $request->getHeaders()->addHeaderLine('User-Agent', 'Baiduspider+(+http://www.baidu.com/search/spider.htm)');
+        $request->getHeaders()->addHeaderLine('Accept-Encoding', 'gzip');
+        $mvcEvent->setRequest($request);
+
+        /** @var \ZfrPrerender\Options\ModuleOptions $moduleOptions */
+        $moduleOptions = ServiceManagerFactory::getServiceManager()->get('ZfrPrerender\Options\ModuleOptions');
+
+        $prerenderRequest = new HttpRequest();
+        $listener         = new PrerenderListener($moduleOptions);
+
+        $response = $this->getMock('Zend\Http\Response');
+
+        // Mock the client
+        $clientMock = $this->getMock('Zend\Http\Client');
+        $clientMock->expects($this->once())
+                   ->method('setUri')
+                   ->with($moduleOptions->getPrerenderUrl() . '/' . $request->getUriString())
+                   ->will($this->returnValue($clientMock));
+
+        $clientMock->expects($this->once())
+                   ->method('setMethod')
+                   ->with('GET');
+
+        $clientMock->expects($this->once())
+                   ->method('send')
+                   ->will($this->returnValue($response));
+
+        $clientMock->expects($this->once())
+                   ->method('getRequest')
+                   ->will($this->returnValue($prerenderRequest));
+
+        $headers = new Headers();
+        $headers->addHeaderLine('Content-Encoding', 'gzip');
+
+        $response->expects($this->once())
+                 ->method('getHeaders')
+                 ->will($this->returnValue($headers));
+
+        $response->expects($this->once())
+                 ->method('getBody')
+                 ->will($this->returnValue(gzencode('original value')));
+
+        $response->expects($this->once())
+                 ->method('setContent')
+                 ->with('original value');
+
+        $listener->setHttpClient($clientMock);
+
+        $result = $listener->prerenderPage($mvcEvent);
+
+        $this->assertInstanceOf('Zend\Http\Response', $result);
+        $this->assertFalse($headers->has('Content-Encoding'), 'Ensure header has been removed');
+        $this->assertTrue($headers->has('Content-Length'), 'Ensure content length has been added');
+        $this->assertEquals(strlen('original value'), $headers->get('Content-Length')->getFieldValue());
     }
 }

@@ -33,7 +33,14 @@ return array(
         'crawler_user_agents' => array(
             'baiduspider',
             'facebookexternalhit',
-            'twitterbot'
+            'twitterbot',
+            'rogerbot',
+            'linkedinbot',
+            'embedly',
+            'bufferbot',
+            'quora link preview',
+            'showyoubot',
+            'outbrain'
         ),
 
         // Ignored extensions
@@ -73,7 +80,7 @@ return array(
             '.flv',
             '.m4v',
             '.torrent',
-            'xml'
+            '.xml'
         ),
 
         // Whitelist and blacklist URLs
