@@ -15,7 +15,7 @@ pages in your server using PhantomJS.
 Install the module by typing (or add it to your `composer.json` file):
 
 ```sh
-$ php composer.phar require zfr/zfr-prerender:2.*
+$ php composer.phar require zfr/zfr-prerender:3.*
 ```
 
 ## Documentation
