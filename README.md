@@ -134,10 +134,10 @@ that happen very early in the MVC process, before the routing is actually done.
 
 `ZfrPrerender\Mvc\PrerenderListener` triggers two events:
 
-1. `ZfrPrerender\Mvc\PrerenderListener::EVENT_PRERENDER_PRE`: this event is triggered before actually making the
+1. `ZfrPrerender\Mvc\PrerenderEvent::EVENT_PRERENDER_PRE`: this event is triggered before actually making the
 request to Prerender service. If you return a `Zend\Http\Response` object from the listener attached to this event,
 it will immediately return this response, hence avoiding a new request to the Prerender service.
-2. `ZfrPrerender\Mvc\PrerenderListener::EVENT_PRERENDER_POST`: this event is triggered once the response from the
+2. `ZfrPrerender\Mvc\PrerenderEvent::EVENT_PRERENDER_POST`: this event is triggered once the response from the
 Prerender service is made. This allows you to cache it (for instance in Memcached).
 
 Listeners attached to those two events receive an instance of `ZfrPrerender\Mvc\PrerenderEvent`. Here is an example
