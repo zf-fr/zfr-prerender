@@ -144,6 +144,8 @@ Listeners attached to those two events receive an instance of `ZfrPrerender\Mvc\
 that shows you how to register listeners using the shared event manager. In your `Module.php` class:
 
 ```php
+use ZfrPrerender\Mvc\PrerenderEvent;
+
 public function onBootstrap(MvcEvent $event)
 {
     $eventManager  = $event->getTarget()->getEventManager();
@@ -151,13 +153,13 @@ public function onBootstrap(MvcEvent $event)
 
     $sharedManager->attach(
         'ZfrPrerender\Mvc\PrerenderListener',
-        PrerenderListener::EVENT_PRERENDER_PRE,
+        PrerenderEvent::EVENT_PRERENDER_PRE,
         array($this, 'prerenderPre')
     );
 
     $sharedManager->attach(
         'ZfrPrerender\Mvc\PrerenderListener',
-        PrerenderListener::EVENT_PRERENDER_POST,
+        PrerenderEvent::EVENT_PRERENDER_POST,
         array($this, 'prerenderPost')
     );
 }
