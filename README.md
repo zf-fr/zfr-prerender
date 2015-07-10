@@ -27,7 +27,7 @@ $ php composer.phar require zfr/zfr-prerender:3.*
 	2. Check to make sure we aren't requesting a resource (js, css, etc...)
 	3. (optional) Check to make sure the url is in the whitelist
 	4. (optional) Check to make sure the url isn't in the blacklist
-2. Make a `GET` request to the [prerender service](https://github.com/collectiveip/prerender) (PhantomJS server) for
+2. Make a `GET` request to the [prerender service](https://github.com/prerender/prerender) (PhantomJS server) for
 the page's prerendered HTML
 3. Return that HTML to the crawler
 
@@ -39,8 +39,8 @@ ZfrPrerender comes with sane default, but you can customize the module by copyin
 
 #### Prerender URL
 
-By default, ZfrPrerender uses the Prerender.io service deployed at `http://prerender.herokuapp.com`. However, you
-may want to [deploy it on your own server](https://github.com/collectiveip/prerender#deploying-your-own). To that
+By default, ZfrPrerender uses the Prerender.io service deployed at `http://service.prerender.io`. However, you
+may want to [deploy it on your own server](https://github.com/prerender/prerender#deploying-your-own). To that
 extent, you can customize ZfrPrerender to use your server using the following configuration:
 
 ```php
