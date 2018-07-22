@@ -36,7 +36,7 @@ class ModuleOptionsFactoryTest extends TestCase
         $options        = $serviceManager->get('ZfrPrerender\Options\ModuleOptions');
 
         $expectedCrawlerUserAgents = [
-            'baiduspider', 'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot',
+            'googlebot', 'bingbot', 'yandex', 'baiduspider', 'facebookexternalhit', 'twitterbot', 'rogerbot', 'linkedinbot',
             'embedly', 'bufferbot', 'quora link preview', 'showyoubot', 'outbrain'
         ];
 
